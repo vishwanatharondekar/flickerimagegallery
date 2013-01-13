@@ -1,12 +1,50 @@
 $(function(){
+	
+	
+	
+	var SearchView = Backbone.View.extend({
+		
+		el : $('.searchbarcontainer'),
+		events : {
+			'click .buttonposition' : 'doSearch'
+		},
+		initialize : function(){
+			this.searched = '';
+			this.flickerGallery = null;
+		},
+		render : function(){
+			
+		},
+		doSearch : function(){
+			var searchQuery = this.$('.inputbox').val();
+			if(searchQuery==='' || this.searched===searchQuery ){
+				return;
+			}
+			
+			if(this.flickerGallery){
+				this.flickerGallery.reInitialize({query : searchQuery});
+				return;
+			}
+
+			
+			
+			this.flickerGallery = new FlickerGallery({el:$('.flickergallery'), query : searchQuery});
+			
+		}
+	});
+	
+	
 	var FlickerGallery = Backbone.View.extend({
 		initialize : function(options) {
-			var imageCollection = new ImageCollection();
-			var slideShowView = new SlideView({el : $('.slideviewcontainer'), collection : imageCollection});
-			var gridView = new GridView({el:$('.gridviewcontainer'), slideShowView : slideShowView,  collection : imageCollection});
+			this.imageCollection = new ImageCollection();
+			this.slideShowView = new SlideView({el : $('.slideviewcontainer'), collection : this.imageCollection});
+			this.gridView = new GridView({el:$('.gridviewcontainer'), slideShowView : this.slideShowView,  collection : this.imageCollection, query : options.query});
 			//this.render(data);
 		},
 		render : function(data) {
+		},
+		reInitialize  : function(options){
+			this.gridView.update(options);
 		}
 	});
 	
@@ -14,7 +52,7 @@ $(function(){
 	var GridView = Backbone.View.extend({
 		initialize : function(options) {
 			
-			
+			this.query = options.query;
 			this.options = $.merge(options, {});
 			this.currentPageIndex = 0;
 
@@ -22,7 +60,7 @@ $(function(){
 			this.options.slideShowView.options.gridView = this;
 			this.gridViewCache = {};
 			this.imagesPerPage = 20;
-			this.showPage({pageIndex : 0});
+			this.showPage({pageIndex : 0, query : options.query});
 		},
 		render : function(data) {
 		},
@@ -113,8 +151,11 @@ $(function(){
 			    }
 			}
 			
+			
+			var url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=' + (data.query?data.query:this.query) + '&per_page=20&page=' + (pageIndex + 1) +'&format=json&extras=owner_name,original_format';
+			console.log(url);
 			$.ajax({
-			    url : 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=flower&per_page=20&page=' + (pageIndex + 1) +'&format=json&extras=owner_name,original_format',
+			    url : url,
 			    jsonpCallback : jsonFlickrApi,
 			    //dataType: "jsonp",
 			    success : function (response){
@@ -142,6 +183,13 @@ $(function(){
 			}
 			
 			this.$('.pageno').html(pageIndex+1);
+		},
+		update : function(options){
+			this.query = options.query;
+			this.currentPageIndex = 0;
+			this.$('.page').remove();
+			this.gridViewCache = [];
+			this.showPage({pageIndex : 0, query : options.query});
 		}
 	});
 	
@@ -319,7 +367,9 @@ $(function(){
 		model : ImageModel
 	});
 	
-	new FlickerGallery({el:$('.flickergallery')});
+	/*new FlickerGallery({el:$('.flickergallery')});
+	*/
+	new SearchView(); 
 	
 });
 
