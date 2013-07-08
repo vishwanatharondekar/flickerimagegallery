@@ -117,7 +117,7 @@ $(function(){
 			this.currentPageIndex = pageIndex;
 			this.gridViewCache[this.currentPageIndex] = pageGridViews = [];
 			
-			function jsonFlickrApi(response){
+			window.jsonFlickrApi = function(response){
 			    var gridContainer = gridView.$('.gridcontainer');
 			    var photoList = response.photos.photo;
 			    var totalResults = response.photos.total;
