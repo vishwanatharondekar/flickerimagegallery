@@ -158,7 +158,7 @@ $(function(){
 			$.ajax({
 			    type : 'get',
 			    url : url,
-			    jsonpCallback : jsonFlickrApi,
+			    //jsonpCallback : jsonFlickrApi,
 			    dataType: "jsonp",
 			    success : function (response){
 			        eval(response);
