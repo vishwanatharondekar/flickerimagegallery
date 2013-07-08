@@ -158,12 +158,12 @@ $(function(){
 			$.ajax({
 			    type : 'get',
 			    url : url,
-			    //jsonpCallback : jsonFlickrApi,
-			    dataType: "jsonp",
+			    jsonpCallback : jsonFlickrApi,
+			    dataType: "jsonp"/*,
 			    success : function (response){
 			    	console.log('response', response);
 			        eval(response);
-			    }
+			    }*/
 
 			});
 			this.$('.pageno').html(pageIndex+1);
