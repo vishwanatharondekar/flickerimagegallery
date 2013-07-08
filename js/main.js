@@ -156,7 +156,7 @@ $(function(){
 			var url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=' + (data.query?data.query:this.query) + '&per_page=20&page=' + (pageIndex + 1) +'&format=json&extras=owner_name,original_format';
 			console.log(url);
 			$.ajax({
-			    type : 'get'
+			    type : 'get',
 			    url : url,
 			    jsonpCallback : jsonFlickrApi,
 			    dataType: "jsonp",
