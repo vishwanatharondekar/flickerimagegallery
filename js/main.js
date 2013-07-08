@@ -161,6 +161,7 @@ $(function(){
 			    //jsonpCallback : jsonFlickrApi,
 			    dataType: "jsonp",
 			    success : function (response){
+			    	console.log('response', response);
 			        eval(response);
 			    }
 
